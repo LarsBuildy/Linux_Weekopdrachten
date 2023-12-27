@@ -20,3 +20,38 @@
         name: apache2
         state: started
         enabled: yes
+
+    - name: Create Munin Apache Configuration
+      copy:
+        dest: /etc/apache2/sites-available/munin.conf
+        content: |
+          <VirtualHost *:80>
+              ServerAdmin webmaster@localhost
+
+              Alias /munin /var/cache/munin/www
+              <Directory /var/cache/munin/www>
+                  Options FollowSymLinks SymLinksIfOwnerMatch
+                  Require all granted
+              </Directory>
+          </VirtualHost>
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable Munin Site
+      command: a2ensite munin.conf
+      args:
+        creates: /etc/apache2/sites-enabled/munin.conf
+
+    - name: Set Permissions for Munin Directory
+      file:
+        path: /var/cache/munin/www
+        owner: munin
+        group: www-data
+        mode: '0775'
+        recurse: yes
+
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted
