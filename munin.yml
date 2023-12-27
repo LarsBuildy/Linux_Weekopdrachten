@@ -23,13 +23,15 @@
         state: started
         enabled: yes
 
-    - name: Configure Munin Node
+    - name: Configure Munin Master
       template:
+        src: munin.conf.j2
+        dest: /etc/munin/munin.conf
       notify:
-        - restart munin-node
+        - restart munin-master
 
   handlers:
-    - name: restart munin-node
+    - name: restart munin-master
       service:
-        name: munin-node
+        name: munin
         state: restarted
