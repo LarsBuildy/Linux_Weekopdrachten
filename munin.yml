@@ -1,0 +1,37 @@
+---
+- name: Install Munin Monitoring Tool
+  hosts: localhost
+  connection: local 
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600 # Cache valid for 1 hour
+
+    - name: Install Munin and Munin Node
+      apt:
+        name:
+          - munin
+          - munin-node
+        state: present
+
+    - name: Start and Enable Munin Node
+      service:
+        name: munin-node
+        state: started
+        enabled: yes
+
+    - name: Configure Munin Node
+      template:
+        src: /path/to/your/munin-node.conf.j2
+        dest: /etc/munin/munin-node.conf
+      notify:
+        - restart munin-node
+
+  handlers:
+    - name: restart munin-node
+      service:
+        name: munin-node
+        state: restarted
