@@ -1,6 +1,6 @@
 ---
 - name: Install and Configure Munin-Node
-  hosts: server,server1
+  hosts: client_servers
   become: yes
 
   tasks:
