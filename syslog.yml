@@ -1,0 +1,28 @@
+---
+- name: Setup Central Syslog Server
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install rsyslog
+      apt:
+        name: rsyslog
+        state: present
+
+    - name: Copy rsyslog server configuration
+      template:
+        src: rsyslog_server.conf.j2
+        dest: /etc/rsyslog.conf
+      notify:
+        - restart rsyslog
+
+    - name: Ensure rsyslog is running and enabled on boot
+      service:
+        name: rsyslog
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart rsyslog
+      service:
+        name: rsyslog
+        state: restarted
