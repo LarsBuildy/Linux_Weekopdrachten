@@ -1,0 +1,16 @@
+---
+- name: Create an Ubuntu Docker Container
+  hosts: server
+  become: yes
+  tasks:
+    - name: Pull the latest Ubuntu image
+      community.docker.docker_image:
+        name: ubuntu
+        source: pull
+
+    - name: Create an Ubuntu container
+      community.docker.docker_container:
+        name: ubuntu_container
+        image: ubuntu
+        state: started
+        command: sleep infinity
